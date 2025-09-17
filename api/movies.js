@@ -19,12 +19,14 @@ export default async function handler(req, res) {
     const moviesData = await moviesRes.json();
 
     // Return only top 10 movies
-    const movies = moviesData.results.slice(0, 10).map(m => ({
-      title: m.title,
-      overview: m.overview,
-      rating: m.vote_average,
-      release_date: m.release_date
-    }));
+   // inside map()
+const movies = moviesData.results.slice(0, 10).map(m => ({
+  title: m.title,
+  overview: m.overview,
+  rating: m.vote_average,
+  release_date: m.release_date,
+  poster: m.poster_path ? `https://image.tmdb.org/t/p/w500${m.poster_path}` : null
+}));
 
     res.status(200).json(movies);
   } catch (err) {
