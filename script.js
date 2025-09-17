@@ -1,33 +1,33 @@
 document.getElementById("getMovies").addEventListener("click", async () => {
   const genre = document.getElementById("genre").value;
-  const resultsDiv = document.getElementById("results");
-  resultsDiv.innerHTML = "<p>Loading...</p>";
+  const container = document.getElementById("movies");
+  container.innerHTML = "<p>Loading...</p>";
 
   try {
+    // 👇 If testing locally, use full Vercel URL instead of relative /api/movies
     const res = await fetch("https://movie-recommendation-x7bd.vercel.app/api/movies?genre=" + genre);
-
-    if (!res.ok) throw new Error("Failed to fetch movies");
-
     const movies = await res.json();
 
-    if (movies.length === 0) {
-      resultsDiv.innerHTML = "<p>No movies found for this genre.</p>";
+    container.innerHTML = ""; // clear old results
+
+    if (movies.error) {
+      container.innerHTML = `<p style="color:red">${movies.error}</p>`;
       return;
     }
 
-    // Display results
-    resultsDiv.innerHTML = movies
-      .map(
-        (m) => `
-        <div class="movie-card">
-          <h2>${m.title} (${new Date(m.release_date).getFullYear()})</h2>
-          <p><strong>Rating:</strong> ⭐ ${m.rating}</p>
-          <p>${m.overview}</p>
-        </div>
-      `
-      )
-      .join("");
+    movies.forEach(movie => {
+      const div = document.createElement("div");
+      div.classList.add("movie");
+      div.innerHTML = `
+        <h3>${movie.title}</h3>
+        <p><b>Rating:</b> ${movie.rating}</p>
+        <p><b>Release:</b> ${movie.release_date}</p>
+        <p>${movie.overview}</p>
+      `;
+      container.appendChild(div);
+    });
   } catch (err) {
-    resultsDiv.innerHTML = `<p style="color:red;">Error: ${err.message}</p>`;
+    console.error(err);
+    container.innerHTML = "<p style='color:red'>Failed to fetch movies</p>";
   }
 });
