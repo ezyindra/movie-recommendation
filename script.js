@@ -4,7 +4,7 @@ document.getElementById("getMovies").addEventListener("click", async () => {
   resultsDiv.innerHTML = "<p>Loading...</p>";
 
   try {
-    const res = await fetch("https://movie-recommendation-x7bd.vercel.app//api/movies?genre=" + genre);
+    const res = await fetch("https://movie-recommendation-x7bd.vercel.app/api/movies?genre=" + genre);
 
     if (!res.ok) throw new Error("Failed to fetch movies");
 
